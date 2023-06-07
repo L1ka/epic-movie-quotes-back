@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Register\RegisterRequest;
+use App\Http\Requests\Login\LoginRequest;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+
+
+class AuthController extends Controller
+{
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        try {
+
+            $newUser = User::create([...$request->validated(), 'verification_token' => Str::random(40)]);
+
+            event(new Registered($newUser));
+            $newUser->sendEmailVerificationNotification();
+
+
+            return response()->json(['user' => $newUser], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function login(LoginRequest $request): JsonResponse
+    {
+        try {
+            $fieldType = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'first_name';
+
+            if (!auth()->attempt([$fieldType => $request->email, 'password' => $request->password])) {
+
+                return response()->json([ 'errors' =>  __("wrong_credentials")], 400);
+            }
+
+
+            Auth::login(Auth::user(), $request->remember);
+            session()->regenerate();
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], );
+        }
+    }
+
+
+    public function logout(Request $request): JsonResponse
+    {
+        $request->session()->invalidate();
+        Auth::guard('web')->logout();
+
+        return response()->json(['message' => 'Logged out successfully']);
+    }
+
+}
