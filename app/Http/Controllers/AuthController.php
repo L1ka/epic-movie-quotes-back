@@ -65,4 +65,40 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out successfully']);
     }
 
+
+    public function verify(Request $request)
+    {
+
+        $user = User::where('verification_token', $request->input('token'))
+        ->first();
+
+        if (!$user->email_verified_at && Carbon::parse($user->created_at)->addMinutes(2)->isPast()) {
+            return response()->json(['error' => 'expired link'], 400);
+        }
+
+        if (!$user->email_verified_at) {
+            $user->email_verified_at = now();
+            $user->save();
+            return;
+        }
+
+        if($user->email_verified_at) {
+            return response()->json(['error' => 'already verified'], 400);
+        }
+
+    }
+
+    public function sendEmail(Request $request)
+    {
+        $user = User::where('verification_token', $request->input('token'))
+        ->first();
+
+        $user->created_at = Carbon::now();
+        $user->save();
+        event(new Registered($user));
+        $user->sendEmailVerificationNotification();
+        return;
+    }
+
+
 }
