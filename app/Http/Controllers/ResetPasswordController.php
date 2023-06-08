@@ -18,13 +18,14 @@ class ResetPasswordController extends Controller
 {
     public function resetEmail(Request $request): JsonResponse
     {
+        app()->setLocale($request->getPreferredLanguage());
         $status = Password::sendResetLink(
             $request->only('email')
         );
 
         return $status === Password::RESET_LINK_SENT
             ? response()->json(['sent' => 'email was sent'], 200)
-            : response()->json(['error' => 'wrong email address'], 400);
+            : response()->json(['error' =>  __("wrong_email_address")], 400);
     }
 
 
@@ -48,7 +49,7 @@ class ResetPasswordController extends Controller
 
         return $status === Password::PASSWORD_RESET
         ? response()->json(['success' => 'success'], 200)
-        : response()->json(['error' => 'wrong email address'], 400);
+        : response()->json(['error' =>  'error'], 400);
     }
 
 }

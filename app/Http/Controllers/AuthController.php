@@ -12,48 +12,38 @@ use Illuminate\Support\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Lang;
 
 class AuthController extends Controller
 {
     public function register(RegisterRequest $request): JsonResponse
     {
-        try {
+        $newUser = User::create([...$request->validated(), 'verification_token' => Str::random(40)]);
 
-            $newUser = User::create([...$request->validated(), 'verification_token' => Str::random(40)]);
-
-            event(new Registered($newUser));
-            $newUser->sendEmailVerificationNotification();
+        event(new Registered($newUser));
+        $newUser->sendEmailVerificationNotification();
 
 
-            return response()->json(['user' => $newUser], 200);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ]);
-        }
+        return response()->json(['user' => $newUser], 200);
     }
 
     public function login(LoginRequest $request): JsonResponse
     {
-        try {
-            $fieldType = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'first_name';
 
-            if (!auth()->attempt([$fieldType => $request->email, 'password' => $request->password])) {
+        app()->setLocale($request->getPreferredLanguage());
 
-                return response()->json([ 'errors' =>  __("wrong_credentials")], 400);
-            }
+        $fieldType = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'first_name';
 
+        if (!auth()->attempt([$fieldType => $request->email, 'password' => $request->password])) {
 
-            Auth::login(Auth::user(), $request->remember);
-            session()->regenerate();
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], );
+            return response()->json([ 'errors' =>  __("wrong_credentials")], 400);
         }
+
+
+        Auth::login(Auth::user(), $request->remember);
+        session()->regenerate();
+
     }
 
 
