@@ -12,14 +12,14 @@ use Illuminate\Support\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Lang;
+
 
 class AuthController extends Controller
 {
     public function register(RegisterRequest $request): JsonResponse
     {
-        $newUser = User::create([...$request->validated(), 'verification_token' => Str::random(40)]);
+        $image='/storage/thumbnails/test.png';
+        $newUser = User::create([...$request->validated(), 'verification_token' => Str::random(40), 'image' => $image]);
 
         event(new Registered($newUser));
         $newUser->sendEmailVerificationNotification();
@@ -40,10 +40,14 @@ class AuthController extends Controller
             return response()->json([ 'errors' =>  __("wrong_credentials")], 400);
         }
 
+        if (auth()->user()->email_verified_at === null) {
+            return response()->json([ 'errors' =>  'not verified'], 401);
+        }
+
 
         Auth::login(Auth::user(), $request->remember);
         session()->regenerate();
-
+        return response()->json([ 'user' =>  Auth::user()], 200);
     }
 
 
