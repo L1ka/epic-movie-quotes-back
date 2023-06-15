@@ -17,8 +17,8 @@ class RegisterRequest extends FormRequest
         app()->setLocale($request->getPreferredLanguage());
         return [
             'email' => ['required', 'email','unique:users'],
-            'first_name' => ['required', 'unique:users', 'min:3', 'max:15', 'lowercase', 'regex:/^[a-z0-9 ]+$/'],
-            'password' => ['required',  'min:8', 'max:15', 'lowercase', 'regex:/^[a-z0-9 ]+$/'],
+            'first_name' => ['required', 'unique:users', 'min:3', 'max:15', 'lowercase', 'alpha_num:ascii'],
+            'password' => ['required',  'min:8', 'max:15', 'lowercase', 'alpha_num:ascii'],
             'confirm_password' => ['required', 'same:password']
         ];
     }
