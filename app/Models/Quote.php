@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Quote extends Model
 {
@@ -22,20 +24,29 @@ class Quote extends Model
 
 
 
-    public function users(): BelongsTo
+    public function user(): BelongsTo
     {
       return $this->BelongsTo(User::class);
     }
 
 
-    public function comments(): HasMany
+    public function likers(): BelongsToMany
     {
-      return $this->hasMany(Comment::class);
+        return $this->belongsToMany(User::class, 'quote_user')
+        ->withTimestamps();
     }
 
 
-    public function likes(): HasMany
+
+    public function comments(): HasMany
     {
-      return $this->hasMany(Like::class);
+        return $this->hasMany(Comment::class);
+    }
+
+
+
+    public function notifications(): MorphMany
+    {
+        return $this->morphMany(Notification::class, 'notifiable');
     }
 }

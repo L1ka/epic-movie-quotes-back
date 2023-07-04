@@ -9,9 +9,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\CanResetPassword;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
@@ -71,5 +73,34 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+
+
+    public function comment(): BelongsTo
+    {
+      return $this->belongsTo(Comment::class);
+    }
+
+    public function quote(): belongsTo
+    {
+      return $this->belongsTo(Quote::class);
+    }
+
+    public function likedQuotes(): BelongsToMany
+    {
+        return $this->belongsToMany(Quote::class, 'quote_user')
+            ->withTimestamps();
+    }
+
+
+    public function movies(): HasMany
+    {
+      return $this->hasMany(Movie::class);
+    }
+
+    public function notifications(): MorphMany
+    {
+        return $this->morphMany(Notification::class, 'notifiable');
     }
 }
