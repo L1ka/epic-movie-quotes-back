@@ -18,7 +18,8 @@ class CommentRequest extends FormRequest
         return [
                 'body' =>  'required',
                 'user_id' => 'required',
-                'quote_id' => 'required'
+                'quote_id' => 'required',
+                'movie_id' => 'required'
             ];
     }
 }
