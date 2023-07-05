@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Like;
+namespace App\Http\Requests\Quote;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LikeRequest extends FormRequest
+class QuoteRequest extends FormRequest
 {
 
 
@@ -16,9 +16,10 @@ class LikeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required',
-            'quote_id' => 'required',
-            'movie_id' => 'required'
+            'quote' =>  'required',
+            'image' => 'required'
         ];
     }
+
+
 }
