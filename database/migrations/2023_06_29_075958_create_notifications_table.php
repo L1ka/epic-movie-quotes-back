@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('quote_id')->constrained()->cascadeOnDelete();
             $table->foreignId('movie_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('notifiable_type');
             $table->integer('notifiable_id');
             $table->boolean('seen')->default(false);
