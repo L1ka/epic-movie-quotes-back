@@ -22,6 +22,7 @@ class GoogleAuthController extends Controller
     public function callback()
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
+        $image='/storage/thumbnails/test.png';
 
         $user = User::updateOrCreate([
             'email' => $googleUser->email,
@@ -29,6 +30,8 @@ class GoogleAuthController extends Controller
             'first_name' => $googleUser->name,
             'email' => $googleUser->email,
             'password' => Str::random(10),
+            'google_id' => $googleUser->id,
+            'image' => $image
         ]);
 
         Auth::login($user);

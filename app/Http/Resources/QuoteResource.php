@@ -7,6 +7,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuoteResource extends JsonResource
 {
+
+
+
     /**
      * Transform the resource into an array.
      *
@@ -18,7 +21,12 @@ class QuoteResource extends JsonResource
             'id' => $this->id,
             'quote' => json_decode($this->quote),
             'image' => $this->image,
-            'movie_id' =>$this->movie_id,
+            'movie' => new MovieResource($this->movie),
+            'user' => new UserResource($this->user),
+            'comments' => CommentResaurce::collection( $this->whenLoaded('comments', function () {
+                return $this->comments->sortByDesc('id');
+            })),
+            'likes_count' => $this->likers()->count(),
         ];
     }
 }
