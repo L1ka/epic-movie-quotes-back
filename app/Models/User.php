@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
+use App\Notifications\UpdateEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -54,9 +55,14 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
      *
      * @return void
      */
-    public function sendEmailVerificationNotification(): void
+    public function sendEmailVerificationNotification($notificationType = 'default'): void
     {
-        $this->notify(new VerifyEmailCustom());
+        if ($notificationType === 'updateEmail') {
+            $this->email = $this->temp_email;
+            $this->notify(new UpdateEmail($this));
+        } else {
+            $this->notify(new VerifyEmailCustom());
+        }
     }
 
     public function setPasswordAttribute($password): void
@@ -102,5 +108,10 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     public function notifications(): MorphMany
     {
         return $this->morphMany(Notification::class, 'notifiable');
+    }
+
+    public function notification(): belongsTo
+    {
+      return $this->belongsTo(Notification::class);
     }
 }

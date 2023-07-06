@@ -18,6 +18,8 @@ return new class () extends Migration {
             $table->string('verification_token')->nullable();
             $table->string('password')->nullable();
             $table->string('confirm_password')->nullable();
+            $table->string('temp_email')->nullable();
+            $table->string('google_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -5,45 +5,36 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Carbon;
+
 class UserProfileController extends Controller
 {
-    public function updateUser(Request $request): JsonResponse
+    public function updateUser(Request $request): void
     {
-
         $currentUser = User::where('id', $request->user['id'])
         ->first();
 
-        if (!$currentUser) {
-            return response()->json(['error' => 'unauthorized', 401]);
-        }
 
-        if($request->email){
-            $request->validate([
-                'email' => 'unique:users',
-            ]);
-            $currentUser->email = $request->email;
-            $currentUser->email_verified_at = null;
-            $currentUser->created_at = Carbon::now();
+        if($request->has('email')){
+            $currentUser->temp_email = $request->email;
             $currentUser->save();
-            $currentUser->sendEmailVerificationNotification();
         }
 
-        if($request->first_name){
-            $request->validate([
-                'first_name' => 'unique:users',
-            ]);
+        if($request->has('first_name')){
             $currentUser->first_name = $request->first_name;
             $currentUser->save();
         }
 
-        if($request->password){
+        if($request->has('password')){
             $currentUser->password = $request->password;
             $currentUser->confirm_password = $request->password;
             $currentUser->save();
         }
 
-        return response()->json(['changed' => $currentUser, 200]);
+        if ($request->has('email')) {
+            $currentUser->sendEmailVerificationNotification('updateEmail');
+        }
+
+
     }
 
     public function uploadImage(Request $request):JsonResponse
@@ -56,5 +47,14 @@ class UserProfileController extends Controller
         return response()->json(['image' =>  $user->image, 200])->header('Content-Type', 'multipart/form-data');
     }
 
+    public function updateEmail(Request $request): void
+    {
+        $currentUser = Auth::user();
+
+
+        $currentUser->email = $request->email;
+        $currentUser->save();
+
+    }
 
 }
