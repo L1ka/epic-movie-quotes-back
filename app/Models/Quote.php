@@ -49,4 +49,25 @@ class Quote extends Model
     {
         return $this->morphMany(Notification::class, 'notifiable');
     }
+
+    public function scopeFilterQuote($query, $request): void
+    {
+        $searchValue = trim(str_replace('#', '', $request->search));
+
+        $query->where(function ($query) use ($searchValue) {
+            $query->where('quote->en', 'like', '%'.$searchValue.'%')
+                ->orWhere('quote->ka', 'like', '%'.$searchValue.'%'); });
+    }
+
+    public function scopeFilterMovie($query, $request): void
+    {
+        $searchValue = trim(str_replace('@', '', $request->search));
+
+        $query->whereHas('movie', function ($query) use ($searchValue) {
+            $query->where('title->en', 'like', '%'.$searchValue.'%')
+                ->orWhere('title->ka', 'like', '%'.$searchValue.'%');
+            });
+    }
+
+
 }

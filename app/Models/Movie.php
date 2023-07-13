@@ -33,4 +33,14 @@ class Movie extends Model
     {
         return $this->hasMany(Quote::class);
     }
+
+
+    public function scopeFilter($query, $request): void
+    {
+        $query->where(function ($query) use ($request) {
+            $query->where('title->en', 'like', '%'.$request->search.'%')
+                ->orWhere('title->ka', 'like', '%'.$request->search.'%');
+        })
+        ->orderBy('id', 'desc');
+    }
 }
