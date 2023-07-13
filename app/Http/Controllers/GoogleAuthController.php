@@ -38,7 +38,6 @@ class GoogleAuthController extends Controller
         Auth::login($user);
         session()->regenerate();
 
-
-        return redirect()->to('http://localhost:5173/news-feed');
+        return redirect()->to(env('FRONT_URL').'/news-feed');
     }
 }
