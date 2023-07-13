@@ -19,6 +19,12 @@ class Notification extends Model
       return $this->belongsTo(User::class);
     }
 
+    public function quote()
+    {
+        return $this->belongsTo(Quote::class);
+    }
+
+
 
     public function notifiable(): MorphTo
     {

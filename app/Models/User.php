@@ -110,6 +110,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
         return $this->morphMany(Notification::class, 'notifiable');
     }
 
+
     public function notification(): belongsTo
     {
       return $this->belongsTo(Notification::class);
