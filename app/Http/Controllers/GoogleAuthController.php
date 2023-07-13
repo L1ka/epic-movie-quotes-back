@@ -31,13 +31,14 @@ class GoogleAuthController extends Controller
             'email' => $googleUser->email,
             'password' => Str::random(10),
             'google_id' => $googleUser->id,
-            'image' => $image
+            'image' => $image,
+            'verification_token' => Str::random(40)
         ]);
 
         Auth::login($user);
         session()->regenerate();
 
 
-        return redirect()->to('http://localhost:5173');
+        return redirect()->to('http://localhost:5173/news-feed');
     }
 }
