@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Register\RegisterRequest;
 use App\Http\Requests\Login\LoginRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -92,6 +93,11 @@ class AuthController extends Controller
         event(new Registered($user));
         $user->sendEmailVerificationNotification();
         return;
+    }
+
+    public function authUser(): UserResource
+    {
+        return new UserResource(Auth::user());
     }
 
 

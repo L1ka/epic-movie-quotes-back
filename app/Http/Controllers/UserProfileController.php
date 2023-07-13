@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Requests\Profile\UserProfileRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -8,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserProfileController extends Controller
 {
-    public function updateUser(Request $request): void
+    public function updateUser(UserProfileRequest $request): void
     {
         $currentUser = User::where('id', $request->user['id'])
         ->first();

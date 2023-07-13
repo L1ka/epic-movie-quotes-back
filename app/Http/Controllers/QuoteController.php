@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Quote\QuoteRequest;
+use App\Http\Resources\QuoteResource;
 use App\Models\Movie;
 use App\Models\Quote;
 use Illuminate\Http\Request;
-
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class QuoteController extends Controller
 {
@@ -15,7 +16,7 @@ class QuoteController extends Controller
         $movie = Movie::where('id', $request->id)->first();
         $this->authorize('store', $movie);
 
-        $quote = Quote::create([
+        Quote::create([
            'quote' => json_encode($request->quote),
            'movie_id' => $request->id,
            'user_id' => $request->user_id,
@@ -47,5 +48,24 @@ class QuoteController extends Controller
         $this->authorize('delete', $quote);
 
         $quote->delete();
+    }
+
+    public function getQuote(Request $request): QuoteResource
+    {
+        app()->setLocale($request->getPreferredLanguage());
+
+        $quote = Quote::where('id', $request->id)->first();
+
+        return new QuoteResource($quote->load('comments'));
+    }
+
+    public function getQuotes(Request $request): ResourceCollection
+    {
+        app()->setLocale($request->getPreferredLanguage());
+
+        $quotes = Movie::where('id', $request->id)
+        ->first()->quotes->sortByDesc('id');
+
+        return QuoteResource::collection($quotes->load('comments'));
     }
 }
