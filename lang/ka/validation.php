@@ -45,6 +45,6 @@ return [
     |
     */
 
-    'attributes' => ['email' => 'ელ ფოსტა', 'first_name' => 'მომხმარებლის სახელი'],
+    'attributes' => ['email' => 'ელ ფოსტა', 'first_name' => 'მომხმარებლის სახელი', 'title' => 'ფილმი'],
 
 ];

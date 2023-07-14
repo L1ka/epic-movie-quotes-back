@@ -34,7 +34,7 @@ class UpdateEmail extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $verificationUrl = 'http://localhost:5173/profile/?email='.$notifiable->email;
+        $verificationUrl = env('FRONT_URL').'/profile/?email='.$notifiable->email;
         return (new MailMessage())
                     ->from('no-reply@moviequotes.ge', 'Movie Quotes')
                     ->subject('Please verify your email address')

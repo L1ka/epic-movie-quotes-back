@@ -40,22 +40,10 @@ class VerifyEmailCustom extends Notification
                     ->view('verify-email', ['url' => $verificationUrl, 'user'=> $notifiable->first_name]);
     }
 
-    // /**
-    //  * Get the array representation of the notification.
-    //  *
-    //  * @return array<string, mixed>
-    //  */
-    // public function toArray(object $notifiable): array
-    // {
-    //     return [
-    //         //
-    //     ];
-    // }
-
 
 
     protected function verificationUrl($notifiable): String
     {
-        return 'http://localhost:5173/email-verified/?token='.$notifiable->verification_token;
+        return env('FRONT_URL').'/email-verified/?token='.$notifiable->verification_token;
     }
 }
