@@ -3,7 +3,7 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -34,7 +34,7 @@ class UpdateEmail extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $verificationUrl = env('FRONT_URL').'/profile/?email='.$notifiable->email;
+        $verificationUrl = Config::get('app.front_url').'/profile/?email='.$notifiable->email;
         return (new MailMessage())
                     ->from('no-reply@moviequotes.ge', 'Movie Quotes')
                     ->subject('Please verify your email address')

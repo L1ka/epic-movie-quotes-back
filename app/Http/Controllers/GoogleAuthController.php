@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Config;
 
 class GoogleAuthController extends Controller
 {
@@ -38,6 +39,6 @@ class GoogleAuthController extends Controller
         Auth::login($user);
         session()->regenerate();
 
-        return redirect()->to(env('FRONT_URL').'/news-feed');
+        return redirect()->to(Config::get('app.front_url').'/news-feed');
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Config;
 
 class ResetPassword extends Notification
 {
@@ -35,7 +36,7 @@ class ResetPassword extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $expires = Carbon::now('PST')->addMinutes(2);
-        $frontUrl = env('FRONT_URL');
+        $frontUrl = Config::get('app.front_url');
 
         return (new MailMessage())
         ->from('no-reply@moviequotes.ge', 'Movie Quotes')

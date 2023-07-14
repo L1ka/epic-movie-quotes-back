@@ -5,6 +5,8 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Config;
+
 
 class VerifyEmailCustom extends Notification
 {
@@ -44,6 +46,6 @@ class VerifyEmailCustom extends Notification
 
     protected function verificationUrl($notifiable): String
     {
-        return env('FRONT_URL').'/email-verified/?token='.$notifiable->verification_token;
+        return Config::get('app.front_url').'/email-verified/?token='.$notifiable->verification_token;
     }
 }
