@@ -25,4 +25,5 @@ jobs:
             git pull
             npm ci
             npm run build
+            composer install
           EOF
