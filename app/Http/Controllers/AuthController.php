@@ -19,10 +19,12 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request): JsonResponse
     {
-        $image='/storage/thumbnails/test.png';
-        $newUser = User::create([...$request->validated(), 'verification_token' => Str::random(40), 'image' => $image]);
 
-        event(new Registered($newUser));
+        $newUser = User::create([
+            ...$request->validated(),
+            'verification_token' => Str::random(40)
+        ]);
+
         $newUser->sendEmailVerificationNotification();
 
 
@@ -61,7 +63,7 @@ class AuthController extends Controller
     }
 
 
-    public function verify(Request $request)
+    public function verify(Request $request): JsonResponse
     {
 
         $user = User::where('verification_token', $request->input('token'))
@@ -74,7 +76,7 @@ class AuthController extends Controller
         if (!$user->email_verified_at) {
             $user->email_verified_at = now();
             $user->save();
-            return;
+            return response()->json(['success' => 'email verified successfully'], 200);
         }
 
         if($user->email_verified_at) {
@@ -83,14 +85,13 @@ class AuthController extends Controller
 
     }
 
-    public function sendEmail(Request $request)
+    public function sendEmail(Request $request): void
     {
         $user = User::where('verification_token', $request->input('token'))
         ->first();
 
         $user->created_at = Carbon::now();
         $user->save();
-        event(new Registered($user));
         $user->sendEmailVerificationNotification();
         return;
     }

@@ -6,8 +6,10 @@ use App\Http\Requests\Quote\QuoteRequest;
 use App\Http\Resources\QuoteResource;
 use App\Models\Movie;
 use App\Models\Quote;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+
 
 class QuoteController extends Controller
 {
@@ -50,24 +52,27 @@ class QuoteController extends Controller
         $quote->delete();
     }
 
-    public function getQuote(Request $request): QuoteResource
+    public function getQuote(Request $request): QuoteResource|JsonResponse
     {
         app()->setLocale($request->getPreferredLanguage());
 
         $quote = Quote::where('id', $request->id)->first();
 
-        return new QuoteResource($quote->load('comments'));
+        if($quote) return new QuoteResource($quote->load('comments'));
+        return response()->json(['quote' => 'quote not found'], 200);
     }
 
-    public function getQuotes(Request $request): ResourceCollection
+    public function getQuotes(Request $request): ResourceCollection|JsonResponse
     {
         app()->setLocale($request->getPreferredLanguage());
 
-        $movie = Movie::where('id', $request->id);
-        if(!$movie) return;
+        $movie = Movie::where('id', $request->id)->first();
+        if($movie) {
+            $quotes = $movie->quotes->sortByDesc('id');
 
-        $quotes = $movie->first()->quotes->sortByDesc('id');
+            return QuoteResource::collection($quotes->load('comments'));
+        }
 
-        return QuoteResource::collection($quotes->load('comments'));
+        return response()->json(['movies' => 'movie not found'], 200);
     }
 }

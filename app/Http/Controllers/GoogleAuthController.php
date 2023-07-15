@@ -6,11 +6,13 @@ use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Config;
 
 class GoogleAuthController extends Controller
 {
-    public function redirect()
+    public function redirect(): JsonResponse
     {
         try {
             $url =  Socialite::driver('google')->redirect()->getTargetUrl();
@@ -20,10 +22,9 @@ class GoogleAuthController extends Controller
         }
     }
 
-    public function callback()
+    public function callback(): RedirectResponse
     {
         $googleUser = Socialite::driver('google')->stateless()->user();
-        $image='/storage/thumbnails/test.png';
 
         $user = User::updateOrCreate([
             'email' => $googleUser->email,
@@ -32,7 +33,6 @@ class GoogleAuthController extends Controller
             'email' => $googleUser->email,
             'password' => Str::random(10),
             'google_id' => $googleUser->id,
-            'image' => $image,
             'verification_token' => Str::random(40)
         ]);
 
