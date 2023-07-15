@@ -6,9 +6,10 @@ use App\Http\Requests\Quote\QuoteRequest;
 use App\Http\Resources\QuoteResource;
 use App\Models\Movie;
 use App\Models\Quote;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use PhpOption\None;
+
 
 class QuoteController extends Controller
 {
@@ -51,17 +52,17 @@ class QuoteController extends Controller
         $quote->delete();
     }
 
-    public function getQuote(Request $request): QuoteResource|null
+    public function getQuote(Request $request): QuoteResource|JsonResponse
     {
         app()->setLocale($request->getPreferredLanguage());
 
         $quote = Quote::where('id', $request->id)->first();
 
         if($quote) return new QuoteResource($quote->load('comments'));
-        return null;
+        return response()->json(['quote' => 'quote not found'], 200);
     }
 
-    public function getQuotes(Request $request): ResourceCollection|null
+    public function getQuotes(Request $request): ResourceCollection|JsonResponse
     {
         app()->setLocale($request->getPreferredLanguage());
 
@@ -72,6 +73,6 @@ class QuoteController extends Controller
             return QuoteResource::collection($quotes->load('comments'));
         }
 
-        return null;
+        return response()->json(['movies' => 'movie not found'], 200);
     }
 }
