@@ -63,11 +63,13 @@ class QuoteController extends Controller
     {
         app()->setLocale($request->getPreferredLanguage());
 
-        $movie = Movie::where('id', $request->id);
-        if(!$movie) return;
+        $movie = Movie::where('id', $request->id)->first();
+        if($movie) {
+            $quotes = $movie->quotes->sortByDesc('id');
 
-        $quotes = $movie->first()->quotes->sortByDesc('id');
+            return QuoteResource::collection($quotes->load('comments'));
+        }
 
-        return QuoteResource::collection($quotes->load('comments'));
+
     }
 }
