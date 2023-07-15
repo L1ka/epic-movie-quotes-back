@@ -8,9 +8,12 @@ use App\Http\Resources\MovieResource;
 use App\Models\Genre;
 use Illuminate\Http\Request;
 use App\Models\Movie;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
-
+use PhpCsFixer\Console\Report\FixReport\JsonReporter;
+use PhpOption\None;
 
 class MovieController extends Controller
 {
@@ -63,21 +66,23 @@ class MovieController extends Controller
         $movie->delete();
     }
 
-    public function getMovie(Request $request): MovieResource
+    public function getMovie(Request $request): MovieResource|null
     {
         $movie = Movie::where('id', $request->id)->first();
 
-        return  new MovieResource($movie->load('quotes'));
+        if($movie) return  new MovieResource($movie->load('quotes'));
+        return null;
     }
 
 
-    public function getMovies(): ResourceCollection
+    public function getMovies(): ResourceCollection|null
     {
         $user = Auth::user();
 
         $movies = Movie::orderBy('id', 'desc')->where('user_id', $user->id)->get();
 
-        return MovieResource::collection($movies->load('quotes'));
+        if($movies) return MovieResource::collection($movies->load('quotes'));
+        return null;
     }
 
 

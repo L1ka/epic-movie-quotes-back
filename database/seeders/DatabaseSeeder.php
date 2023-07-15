@@ -20,10 +20,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory(10)->create();
-        Movie::factory(5)->create();
-        Quote::factory(10)->create();
-        Comment::factory(20)->create();
-        QuoteUserFactory::factory(5)->create();
+        // Movie::factory(5)->create();
+        // Quote::factory(10)->create();
+        // Comment::factory(20)->create();
+        // QuoteUserFactory::factory(5)->create();
 
         $genres = [
             'Action',
