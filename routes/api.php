@@ -73,7 +73,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('create-like', 'addLike')->name('create-like');
         Route::get('get-notifications', 'getNotifications')->name('get-notifications');
         Route::post('notification-seen', 'notificationSeen')->name('notification-seen');
-        Route::post('mark-all-seen', 'MarkAllSeen')->name('mark-all-seen');
+        Route::post('mark-all-seen', 'markAllSeen')->name('mark-all-seen');
     });
 
 

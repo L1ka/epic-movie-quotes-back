@@ -72,7 +72,7 @@ class InteractionController extends Controller
        return NotificationResource::collection(Auth::user()->notifications->sortByDesc('id'));
     }
 
-    public function MarkAllSeen(): void
+    public function markAllSeen(): void
     {
         Notification::where('notifiable_id', Auth::user()->id)->update(['seen' => true]);
     }
