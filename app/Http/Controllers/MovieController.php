@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MovieController extends Controller
 {
-    public function create(MovieRequest $request): void
+    public function store(MovieRequest $request): void
     {
         $this->authorize('create',Movie::class);
 
@@ -63,16 +63,16 @@ class MovieController extends Controller
         $movie->delete();
     }
 
-    public function getMovie(Request $request): MovieResource|JsonResponse
+    public function show(Request $request): MovieResource|JsonResponse
     {
-        $movie = Movie::find($request->id);
+        $movie = Movie::find($request->movie);
 
         if($movie) return  new MovieResource($movie->load('quotes'));
         return response()->json(['movie' => 'movie not found'], 200);
     }
 
 
-    public function getMovies(): ResourceCollection|JsonResponse
+    public function showMovies(): ResourceCollection|JsonResponse
     {
         $user = Auth::user();
 
@@ -83,7 +83,7 @@ class MovieController extends Controller
     }
 
 
-    public function getGenres(): ResourceCollection
+    public function showGenres(): ResourceCollection
     {
         return  GenreResource::collection(Genre::all());
     }

@@ -67,7 +67,7 @@ class InteractionController extends Controller
     }
 
 
-    public function getNotifications(): ResourceCollection
+    public function show(): ResourceCollection
     {
        return NotificationResource::collection(Auth::user()->notifications->sortByDesc('id'));
     }

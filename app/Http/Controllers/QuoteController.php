@@ -52,7 +52,7 @@ class QuoteController extends Controller
         $quote->delete();
     }
 
-    public function getQuote(Request $request): QuoteResource|JsonResponse
+    public function show(Request $request): QuoteResource|JsonResponse
     {
         app()->setLocale($request->getPreferredLanguage());
 
@@ -62,7 +62,7 @@ class QuoteController extends Controller
         return response()->json(['quote' => 'quote not found'], 200);
     }
 
-    public function getQuotes(Request $request): ResourceCollection|JsonResponse
+    public function showQuotes(Request $request): ResourceCollection|JsonResponse
     {
         app()->setLocale($request->getPreferredLanguage());
 

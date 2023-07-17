@@ -50,37 +50,37 @@ Route::group(['controller' => GoogleAuthController::class], function () {
 
 Route::middleware('auth:sanctum')->group(function() {
     Route::group(['controller' => QuoteController::class], function () {
-        Route::post('quote/store',  'store')->name('quote.store');
-        Route::post('quote/update',  'update')->name('quote.update');
-        Route::delete('quote/delete/{id}',  'delete')->name('quote.delete');
-        Route::get('get-quote/{id}',  'getQuote')->name('get-quote');
-        Route::get('get-quotes/{id}',  'getQuotes')->name('get-quotes');
+        Route::post('/quotes',  'store')->name('quote.store');
+        Route::post('/quote/update',  'update')->name('quote.update');
+        Route::delete('/quote/{id}',  'delete')->name('quote.delete');
+        Route::get('/quote/{id}',  'show')->name('quote.show');
+        Route::get('/quotes/{id}',  'showQuotes')->name('quotes.show');
     });
 
     Route::group(['controller' => MovieController::class], function () {
-        Route::post('/movie/create', 'create')->name('movie.create');
+        Route::post('/movies', 'store')->name('movie.store');
         Route::post('/movie/update','update')->name('movie.update');
-        Route::delete('/movie/delete/{id}',  'delete')->name('movie.delete');
-        Route::get('/get-movie/{id}',  'getMovie')->name('get-movie');
-        Route::get('/get-movies',  'getMovies')->name('get-movies');
-        Route::get('/get-genres',  'getGenres')->name('get-genres');
+        Route::delete('/movie/{id}',  'delete')->name('movie.delete');
+        Route::get('/movies/{movie}',  'show')->name('movie.show');
+        Route::get('/movies',  'showMovies')->name('movies.show');
+        Route::get('/genres',  'showGenres')->name('genres.show');
     });
 
 
 
     Route::group(['controller' => InteractionController::class], function () {
-        Route::post('create-comment', 'addComment')->name('create-comment');
-        Route::post('create-like', 'addLike')->name('create-like');
-        Route::get('get-notifications', 'getNotifications')->name('get-notifications');
+        Route::post('/comment', 'addComment')->name('create-comment');
+        Route::post('/like', 'addLike')->name('create-like');
+        Route::get('/notifications', 'show')->name('notifications.show');
         Route::post('notification-seen', 'notificationSeen')->name('notification-seen');
         Route::post('mark-all-seen', 'markAllSeen')->name('mark-all-seen');
     });
 
 
     Route::group(['controller' => UserProfileController::class], function () {
-        Route::post('/update-user',  'updateUser')->name('update-user');
-        Route::post('/upload-image',  'uploadImage')->name('upload-image');
-        Route::post('/update-email',  'updateEmail')->name('update-email');
+        Route::post('/profile/user',  'updateUser')->name('update-user');
+        Route::post('/profile/image',  'uploadImage')->name('upload-image');
+        Route::post('/profile/email',  'updateEmail')->name('update-email');
     });
 
     Route::group(['controller' => SearchController::class], function () {
