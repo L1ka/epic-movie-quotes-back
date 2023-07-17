@@ -34,7 +34,7 @@ class MovieController extends Controller
     public function update(Request $request): void
     {
 
-        $movie = Movie::where('id', $request->id)->first();
+        $movie = Movie::find($request->id);
         $this->authorize('update', $movie);
 
         if( is_string($request->image)){
@@ -57,7 +57,7 @@ class MovieController extends Controller
 
     public function delete(Request $request): void
     {
-        $movie = Movie::where('id', $request->id)->first();
+        $movie = Movie::find($request->id);
         $this->authorize('delete', $movie);
 
         $movie->delete();
@@ -65,7 +65,7 @@ class MovieController extends Controller
 
     public function getMovie(Request $request): MovieResource|JsonResponse
     {
-        $movie = Movie::where('id', $request->id)->first();
+        $movie = Movie::find($request->id);
 
         if($movie) return  new MovieResource($movie->load('quotes'));
         return response()->json(['movie' => 'movie not found'], 200);

@@ -23,7 +23,7 @@ class InteractionController extends Controller
     public function addComment(CommentRequest $request): void
     {
         $comment = Comment::create($request->validated());
-        $receiverId = Quote::where('id', $request->quote_id)->first()->user_id;
+        $receiverId = Quote::find($request->quote_id)->user_id;
 
         event(new AddComment(new CommentResaurce($comment)));
 
@@ -33,7 +33,7 @@ class InteractionController extends Controller
 
     public function addLike(LikeRequest $request): void
     {
-        $quote = Quote::where('id', $request->quote_id)->first();
+        $quote = Quote::find($request->quote_id);
         $receiverId = $quote->user_id;
         $quote->likers()->toggle($request->user_id);
         $quote->save();
@@ -50,7 +50,7 @@ class InteractionController extends Controller
 
     public function sendNotification($request, $type): void
     {
-        $receiverId = Quote::where('id', $request->quote_id)->first()->user_id;
+        $receiverId = Quote::find($request->quote_id)->user_id;
 
         $notification = Notification::create([...$request->validated(),
             'notifiable_type' => 'App\Models\User',
@@ -79,7 +79,7 @@ class InteractionController extends Controller
 
     public function notificationSeen(Request $request): NotificationResource
     {
-        $notification = Notification::where('id', $request->id)->first();
+        $notification = Notification::find($request->id)->first();
 
         $notification->seen = true;
         $notification->save();

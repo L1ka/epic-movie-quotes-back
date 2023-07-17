@@ -15,7 +15,7 @@ class QuoteController extends Controller
 {
     public function store(QuoteRequest $request): void
     {
-        $movie = Movie::where('id', $request->id)->first();
+        $movie = Movie::find($request->id);
         $this->authorize('store', $movie);
 
         Quote::create([
@@ -28,7 +28,7 @@ class QuoteController extends Controller
 
     public function update(QuoteRequest $request): void
     {
-        $quote = Quote::where('id', $request->id)->first();
+        $quote = Quote::find($request->id);
         $this->authorize('update', $quote);
 
 
@@ -45,7 +45,7 @@ class QuoteController extends Controller
 
     public function delete(Request $request): void
     {
-        $quote = Quote::where('id', $request->id)->first();
+        $quote = Quote::find($request->id);
 
         $this->authorize('delete', $quote);
 
@@ -56,7 +56,7 @@ class QuoteController extends Controller
     {
         app()->setLocale($request->getPreferredLanguage());
 
-        $quote = Quote::where('id', $request->id)->first();
+        $quote = Quote::find($request->id);
 
         if($quote) return new QuoteResource($quote->load('comments'));
         return response()->json(['quote' => 'quote not found'], 200);
@@ -66,7 +66,7 @@ class QuoteController extends Controller
     {
         app()->setLocale($request->getPreferredLanguage());
 
-        $movie = Movie::where('id', $request->id)->first();
+        $movie = Movie::find($request->id);
         if($movie) {
             $quotes = $movie->quotes->sortByDesc('id');
 

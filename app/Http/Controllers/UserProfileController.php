@@ -12,8 +12,7 @@ class UserProfileController extends Controller
 {
     public function updateUser(UserProfileRequest $request): void
     {
-        $currentUser = User::where('id', $request->user['id'])
-        ->first();
+        $currentUser = User::find($request->user['id']);
 
 
         if($request->has('email')){
