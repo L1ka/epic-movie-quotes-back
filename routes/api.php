@@ -59,7 +59,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::group(['controller' => MovieController::class], function () {
         Route::post('/movies', 'store')->name('movie.store');
-        Route::post('/movie/update','update')->name('movie.update');
+        Route::patch('/movies/{movie}','update')->name('movie.update');
         Route::delete('/movie/{movie}',  'delete')->name('movie.delete');
         Route::get('/movies/{movie}',  'show')->name('movie.show');
         Route::get('/movies',  'showMovies')->name('movies.show');

@@ -30,10 +30,8 @@ class MovieController extends Controller
 
     }
 
-    public function update(Request $request): void
+    public function update(Request $request, Movie $movie)
     {
-
-        $movie = Movie::find($request->id);
         $this->authorize('update', $movie);
 
         if( is_string($request->image)){
