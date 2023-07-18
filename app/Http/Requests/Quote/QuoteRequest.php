@@ -16,8 +16,8 @@ class QuoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'quote' =>  'required',
-            'image' => 'required'
+            'quote' => ['required'],
+            'image' => ['required']
         ];
     }
 

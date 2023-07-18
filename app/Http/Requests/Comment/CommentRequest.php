@@ -16,10 +16,10 @@ class CommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'body' =>  'required',
-            'user_id' => 'required',
-            'quote_id' => 'required',
-            'movie_id' => 'required'
+            'body' =>  ['required'],
+            'user_id' => ['required'],
+            'quote_id' => ['required'],
+            'movie_id' => ['required']
         ];
     }
 }
