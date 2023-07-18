@@ -10,82 +10,68 @@ use Illuminate\Http\Request;
 use App\Models\Movie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
 
 class MovieController extends Controller
 {
-    public function create(MovieRequest $request): void
-    {
-        $this->authorize('create',Movie::class);
+	public function store(MovieRequest $request): void
+	{
+		$this->authorize('create', Movie::class);
 
-        $newMovie =   Movie::create([
-            'title' => json_encode($request->title),
-            'year' => $request->year,
-            'director' => json_encode($request->director),
-            'discription' => json_encode($request->discription),
-            'image' => '/storage/'.$request->image->store('thumbnails'),
-            'user_id' => $request->user_id
+        $newMovie = Movie::create([
+            ...$request->validated(),
+            'image' => '/storage/' . $request->image->store('thumbnails')
         ]);
 
-        $newMovie->genres()->attach($request->genre);
+		$newMovie->genres()->attach(json_decode($request->genre));
+	}
 
-    }
+	public function update(Request $request, Movie $movie): void
+	{
+		$this->authorize('update', $movie);
 
-    public function update(Request $request): void
-    {
+		if (is_string($request->image)) {
+			$image = $request->image;
+		} else {
+			$image = '/storage/' . $request->image->store('thumbnails');
+		}
 
-        $movie = Movie::where('id', $request->id)->first();
-        $this->authorize('update', $movie);
-
-        if( is_string($request->image)){
-            $image = $request->image;
-        } else{
-            $image = '/storage/'.$request->image->store('thumbnails');
-        };
-
-
-        $movie->update([
-            'title' => json_encode($request->title),
-            'year' => $request->year,
-            'director' => json_encode($request->director),
-            'discription' => json_encode($request->discription),
-            'image' => $image
-        ]);
-
-        $movie->genres()->sync($request->genre);
-    }
-
-    public function delete(Request $request): void
-    {
-        $movie = Movie::where('id', $request->id)->first();
-        $this->authorize('delete', $movie);
-
-        $movie->delete();
-    }
-
-    public function getMovie(Request $request): MovieResource|JsonResponse
-    {
-        $movie = Movie::where('id', $request->id)->first();
-
-        if($movie) return  new MovieResource($movie->load('quotes'));
-        return response()->json(['movie' => 'movie not found'], 200);
-    }
+        $movie->update([...$request->all(), 'image' => $image]);
 
 
-    public function getMovies(): ResourceCollection|JsonResponse
-    {
-        $user = Auth::user();
+		$movie->genres()->sync(json_decode($request->genre));
+	}
 
-        $movies = Movie::orderBy('id', 'desc')->where('user_id', $user->id)->get();
+	public function delete(Movie $movie): void
+	{
+		$this->authorize('delete', $movie);
 
-        if($movies) return MovieResource::collection($movies->load('quotes'));
-        return response()->json(['movies' => 'movie not found'], 200);
-    }
+		$movie->delete();
+	}
 
+	public function show(Movie $movie): MovieResource|JsonResponse
+	{
+		$movie = Movie::find($movie->id);
 
-    public function getGenres(): ResourceCollection
-    {
-        return  GenreResource::collection(Genre::all());
-    }
+		if ($movie) {
+			return  new MovieResource($movie->load('quotes'));
+		}
+		return response()->json(['movie' => 'movie not found'], 200);
+	}
 
+	public function showMovies(): ResourceCollection|JsonResponse
+	{
+		$user = auth()->user();
+
+		$movies = Movie::orderBy('id', 'desc')->where('user_id', $user->id)->get();
+
+		if ($movies) {
+			return MovieResource::collection($movies->load('quotes'));
+		}
+		return response()->json(['movies' => 'movie not found'], 200);
+	}
+
+	public function showGenres(): ResourceCollection
+	{
+		return  GenreResource::collection(Genre::all());
+	}
 }

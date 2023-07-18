@@ -10,69 +10,59 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-
 class QuoteController extends Controller
 {
-    public function store(QuoteRequest $request): void
-    {
-        $movie = Movie::where('id', $request->id)->first();
-        $this->authorize('store', $movie);
+	public function store(QuoteRequest $request): void
+	{
+		$movie = Movie::find($request->movie_id);
+		$this->authorize('store', $movie);
 
         Quote::create([
-           'quote' => json_encode($request->quote),
-           'movie_id' => $request->id,
-           'user_id' => $request->user_id,
-            'image' => '/storage/'.request()->file('image')->store('thumbnails'),
+            ...$request->validated(),
+            'image'    => '/storage/' . request()->image->store('thumbnails')
         ]);
-     }
+	}
 
-    public function update(QuoteRequest $request): void
-    {
-        $quote = Quote::where('id', $request->id)->first();
-        $this->authorize('update', $quote);
+	public function update(Request $request, Quote $quote): void
+	{
+		$this->authorize('update', $quote);
 
+		if (is_string($request->image)) {
+			$image = $request->image;
+		} else {
+			$image = '/storage/' . $request->image->store('thumbnails');
+		}
 
-        if( is_string($request->image)){
-            $image = $request->image;
-        } else{
-            $image = '/storage/'.$request->image->store('thumbnails');
-        };
+		$quote->update(['quote' => $request->quote, 'image' => $image]);
+	}
 
+	public function delete(Quote $quote): void
+	{
+		$this->authorize('delete', $quote);
 
-        $quote->update(['quote' => json_encode($request->quote),'image' => $image ]);
+		$quote->delete();
+	}
 
-    }
+	public function show(Quote $quote): QuoteResource|JsonResponse
+	{
+		$quote = Quote::find($quote->id);
 
-    public function delete(Request $request): void
-    {
-        $quote = Quote::where('id', $request->id)->first();
+		if ($quote) {
+			return new QuoteResource($quote->load('comments'));
+		}
 
-        $this->authorize('delete', $quote);
+		return response()->json(['quote' => 'quote not found'], 200);
+	}
 
-        $quote->delete();
-    }
+	public function showQuotes(Movie $movie): ResourceCollection|JsonResponse
+	{
+		$movie = Movie::find($movie->id);
+		if ($movie) {
+			$quotes = $movie->quotes->sortByDesc('id');
 
-    public function getQuote(Request $request): QuoteResource|JsonResponse
-    {
-        app()->setLocale($request->getPreferredLanguage());
+			return QuoteResource::collection($quotes->load('comments'));
+		}
 
-        $quote = Quote::where('id', $request->id)->first();
-
-        if($quote) return new QuoteResource($quote->load('comments'));
-        return response()->json(['quote' => 'quote not found'], 200);
-    }
-
-    public function getQuotes(Request $request): ResourceCollection|JsonResponse
-    {
-        app()->setLocale($request->getPreferredLanguage());
-
-        $movie = Movie::where('id', $request->id)->first();
-        if($movie) {
-            $quotes = $movie->quotes->sortByDesc('id');
-
-            return QuoteResource::collection($quotes->load('comments'));
-        }
-
-        return response()->json(['movies' => 'movie not found'], 200);
-    }
+		return response()->json(['movies' => 'movie not found'], 200);
+	}
 }

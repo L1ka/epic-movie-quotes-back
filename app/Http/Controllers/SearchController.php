@@ -9,14 +9,13 @@ use App\Models\Quote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class SearchController extends Controller
 {
     public function searchMyMovies(Request $request): ResourceCollection
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         $movies = Movie::where('user_id', $user->id)->filter($request)->get();
 

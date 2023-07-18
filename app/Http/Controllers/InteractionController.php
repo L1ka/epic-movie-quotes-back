@@ -15,7 +15,6 @@ use App\Models\Notification;
 use App\Models\Quote;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
 
 
 class InteractionController extends Controller
@@ -23,26 +22,26 @@ class InteractionController extends Controller
     public function addComment(CommentRequest $request): void
     {
         $comment = Comment::create($request->validated());
-        $receiverId = Quote::where('id', $request->input('quote_id'))->first()->user_id;
+        $receiverId = Quote::find($request->quote_id)->user_id;
 
         event(new AddComment(new CommentResaurce($comment)));
 
-        if($request->input('user_id') !== $receiverId) $this->sendNotification($request, 'comment');
+        if($request->user_id !== $receiverId) $this->sendNotification($request, 'comment');
 
     }
 
     public function addLike(LikeRequest $request): void
     {
-        $quote = Quote::where('id', $request->input('quote_id'))->first();
+        $quote = Quote::find($request->quote_id);
         $receiverId = $quote->user_id;
-        $quote->likers()->toggle($request->input('user_id'));
+        $quote->likers()->toggle($request->user_id);
         $quote->save();
         $quoteResource = new QuoteResource($quote);
-        $liked = $quote->likers()->where('id', $request->input('user_id'))->exists();
+        $liked = $quote->likers()->where('id', $request->user_id)->exists();
 
         event(new AddLike(['count' => $quoteResource->likers()->count(), 'quote_id' =>  $quoteResource->id]));
 
-        if ($liked && $request->input('user_id') !== $receiverId) $this->sendNotification($request, 'like');
+        if ($liked && $request->user_id !== $receiverId) $this->sendNotification($request, 'like');
 
     }
 
@@ -50,7 +49,7 @@ class InteractionController extends Controller
 
     public function sendNotification($request, $type): void
     {
-        $receiverId = Quote::where('id', $request->input('quote_id'))->first()->user_id;
+        $receiverId = Quote::find($request->quote_id)->user_id;
 
         $notification = Notification::create([...$request->validated(),
             'notifiable_type' => 'App\Models\User',
@@ -67,19 +66,19 @@ class InteractionController extends Controller
     }
 
 
-    public function getNotifications(): ResourceCollection
+    public function show(): ResourceCollection
     {
-       return NotificationResource::collection(Auth::user()->notifications->sortByDesc('id'));
+       return NotificationResource::collection(auth()->user()->notifications->sortByDesc('id'));
     }
 
-    public function MarkAllSeen(): void
+    public function markAllSeen(): void
     {
-        Notification::where('notifiable_id', Auth::user()->id)->update(['seen' => true]);
+        Notification::where('notifiable_id', auth()->user()->id)->update(['seen' => true]);
     }
 
     public function notificationSeen(Request $request): NotificationResource
     {
-        $notification = Notification::where('id', $request->id)->first();
+        $notification = Notification::find($request->id)->first();
 
         $notification->seen = true;
         $notification->save();

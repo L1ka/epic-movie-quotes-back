@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -36,7 +35,7 @@ class GoogleAuthController extends Controller
             'verification_token' => Str::random(40)
         ]);
 
-        Auth::login($user);
+        auth()->login($user);
         session()->regenerate();
 
         return redirect()->to(Config::get('app.front_url').'/news-feed');
