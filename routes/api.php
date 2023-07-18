@@ -52,15 +52,15 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::group(['controller' => QuoteController::class], function () {
         Route::post('/quotes',  'store')->name('quote.store');
         Route::post('/quote/update',  'update')->name('quote.update');
-        Route::delete('/quote/{id}',  'delete')->name('quote.delete');
-        Route::get('/quote/{id}',  'show')->name('quote.show');
-        Route::get('/quotes/{id}',  'showQuotes')->name('quotes.show');
+        Route::delete('/quote/{quote}',  'delete')->name('quote.delete');
+        Route::get('/quote/{quote}',  'show')->name('quote.show');
+        Route::get('/quotes/{movie}',  'showQuotes')->name('quotes.show');
     });
 
     Route::group(['controller' => MovieController::class], function () {
         Route::post('/movies', 'store')->name('movie.store');
         Route::post('/movie/update','update')->name('movie.update');
-        Route::delete('/movie/{id}',  'delete')->name('movie.delete');
+        Route::delete('/movie/{movie}',  'delete')->name('movie.delete');
         Route::get('/movies/{movie}',  'show')->name('movie.show');
         Route::get('/movies',  'showMovies')->name('movies.show');
         Route::get('/genres',  'showGenres')->name('genres.show');

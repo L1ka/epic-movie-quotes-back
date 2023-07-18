@@ -43,30 +43,27 @@ class QuoteController extends Controller
 
     }
 
-    public function delete(Request $request): void
+    public function delete(Quote $quote): void
     {
-        $quote = Quote::find($request->id);
+        $quote = Quote::find($quote->id);
 
         $this->authorize('delete', $quote);
 
         $quote->delete();
     }
 
-    public function show(Request $request): QuoteResource|JsonResponse
+    public function show(Quote $quote): QuoteResource|JsonResponse
     {
-        app()->setLocale($request->getPreferredLanguage());
-
-        $quote = Quote::find($request->id);
+        $quote = Quote::find($quote->id);
 
         if($quote) return new QuoteResource($quote->load('comments'));
+
         return response()->json(['quote' => 'quote not found'], 200);
     }
 
-    public function showQuotes(Request $request): ResourceCollection|JsonResponse
+    public function showQuotes(Movie $movie): ResourceCollection|JsonResponse
     {
-        app()->setLocale($request->getPreferredLanguage());
-
-        $movie = Movie::find($request->id);
+        $movie = Movie::find($movie->id);
         if($movie) {
             $quotes = $movie->quotes->sortByDesc('id');
 

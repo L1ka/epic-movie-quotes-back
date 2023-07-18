@@ -55,17 +55,16 @@ class MovieController extends Controller
         $movie->genres()->sync($request->genre);
     }
 
-    public function delete(Request $request): void
+    public function delete(Movie $movie)
     {
-        $movie = Movie::find($request->id);
         $this->authorize('delete', $movie);
 
         $movie->delete();
     }
 
-    public function show(Request $request): MovieResource|JsonResponse
+    public function show(Movie $movie): MovieResource|JsonResponse
     {
-        $movie = Movie::find($request->movie);
+        $movie = Movie::find($movie->id);
 
         if($movie) return  new MovieResource($movie->load('quotes'));
         return response()->json(['movie' => 'movie not found'], 200);
