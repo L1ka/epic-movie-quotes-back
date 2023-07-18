@@ -15,7 +15,6 @@ use App\Models\Notification;
 use App\Models\Quote;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
 
 
 class InteractionController extends Controller
@@ -69,12 +68,12 @@ class InteractionController extends Controller
 
     public function show(): ResourceCollection
     {
-       return NotificationResource::collection(Auth::user()->notifications->sortByDesc('id'));
+       return NotificationResource::collection(auth()->user()->notifications->sortByDesc('id'));
     }
 
     public function markAllSeen(): void
     {
-        Notification::where('notifiable_id', Auth::user()->id)->update(['seen' => true]);
+        Notification::where('notifiable_id', auth()->user()->id)->update(['seen' => true]);
     }
 
     public function notificationSeen(Request $request): NotificationResource

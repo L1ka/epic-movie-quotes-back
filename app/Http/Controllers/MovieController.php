@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use App\Models\Movie;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
 
 class MovieController extends Controller
 {
@@ -73,7 +72,7 @@ class MovieController extends Controller
 
     public function showMovies(): ResourceCollection|JsonResponse
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         $movies = Movie::orderBy('id', 'desc')->where('user_id', $user->id)->get();
 

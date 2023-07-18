@@ -11,7 +11,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
+
 
 
 class AuthController extends Controller
@@ -47,16 +47,16 @@ class AuthController extends Controller
         }
 
 
-        Auth::login(Auth::user(), $request->remember);
+        auth()->login(auth()->user(), $request->remember);
         session()->regenerate();
-        return response()->json([ 'user' =>  Auth::user()], 200);
+        return response()->json([ 'user' => auth()->user()], 200);
     }
 
 
     public function logout(Request $request): JsonResponse
     {
         $request->session()->invalidate();
-        Auth::guard('web')->logout();
+        auth()->guard('web')->logout();
 
         return response()->json(['message' => 'Logged out successfully']);
     }
@@ -97,7 +97,7 @@ class AuthController extends Controller
 
     public function authUser(): UserResource
     {
-        return new UserResource(Auth::user());
+        return new UserResource(auth()->user());
     }
 
 

@@ -6,7 +6,7 @@ use App\Http\Requests\Profile\UserProfileRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
 
 class UserProfileController extends Controller
 {
@@ -40,7 +40,7 @@ class UserProfileController extends Controller
 
     public function uploadImage(Request $request):JsonResponse
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         $user->image = '/storage/'.$request->image->store('thumbnails');
         $user->save();
@@ -50,7 +50,7 @@ class UserProfileController extends Controller
 
     public function updateEmail(Request $request): void
     {
-        $currentUser = Auth::user();
+        $currentUser = auth()->user();
 
 
         $currentUser->email = $request->email;
