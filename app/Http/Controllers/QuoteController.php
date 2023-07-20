@@ -17,10 +17,10 @@ class QuoteController extends Controller
 		$movie = Movie::find($request->movie_id);
 		$this->authorize('store', $movie);
 
-        Quote::create([
-            ...$request->validated(),
-            'image'    => '/storage/' . request()->image->store('thumbnails')
-        ]);
+		Quote::create([
+			...$request->validated(),
+			'image'    => '/storage/' . request()->image->store('thumbnails'),
+		]);
 	}
 
 	public function update(Request $request, Quote $quote): void
@@ -54,7 +54,7 @@ class QuoteController extends Controller
 		return response()->json(['quote' => 'quote not found'], 200);
 	}
 
-	public function showQuotes(Movie $movie): ResourceCollection|JsonResponse
+	public function index(Movie $movie): ResourceCollection|JsonResponse
 	{
 		$movie = Movie::find($movie->id);
 		if ($movie) {

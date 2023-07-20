@@ -26,11 +26,9 @@ class DatabaseSeeder extends Seeder
 		// Comment::factory(20)->create();
 		// QuoteUserFactory::factory(5)->create();
 
-
-        $genres = json_decode(File::get(database_path('seeders/genres.json')));
+		$genres = json_decode(File::get(database_path('seeders/genres.json')));
 
 		foreach ($genres as $genre) {
-
 			Genre::create(['genre' => json_encode($genre, JSON_UNESCAPED_UNICODE)]);
 		}
 	}

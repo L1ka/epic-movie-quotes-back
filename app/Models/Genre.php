@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Genre extends Model
 {
-    use HasFactory;
+	use HasFactory;
 
-    protected $guarded = ['id'];
+	protected $guarded = ['id'];
 
-    public function movies(): BelongsToMany
-    {
-        return $this->belongsToMany(Movie::class, 'genre_movie');
-    }
+	public function movies(): BelongsToMany
+	{
+		return $this->belongsToMany(Movie::class, 'genre_movie');
+	}
 }

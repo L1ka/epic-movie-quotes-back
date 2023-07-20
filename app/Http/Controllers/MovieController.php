@@ -17,10 +17,10 @@ class MovieController extends Controller
 	{
 		$this->authorize('create', Movie::class);
 
-        $newMovie = Movie::create([
-            ...$request->validated(),
-            'image' => '/storage/' . $request->image->store('thumbnails')
-        ]);
+		$newMovie = Movie::create([
+			...$request->validated(),
+			'image' => '/storage/' . $request->image->store('thumbnails'),
+		]);
 
 		$newMovie->genres()->attach(json_decode($request->genre));
 	}
@@ -35,8 +35,7 @@ class MovieController extends Controller
 			$image = '/storage/' . $request->image->store('thumbnails');
 		}
 
-        $movie->update([...$request->all(), 'image' => $image]);
-
+		$movie->update([...$request->all(), 'image' => $image]);
 
 		$movie->genres()->sync(json_decode($request->genre));
 	}
@@ -58,7 +57,7 @@ class MovieController extends Controller
 		return response()->json(['movie' => 'movie not found'], 200);
 	}
 
-	public function showMovies(): ResourceCollection|JsonResponse
+	public function index(): ResourceCollection|JsonResponse
 	{
 		$user = auth()->user();
 

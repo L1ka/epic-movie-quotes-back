@@ -46,7 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::patch('/quotes/{quote}', 'update')->name('quote.update');
 		Route::delete('/quote/{quote}', 'delete')->name('quote.delete');
 		Route::get('/quote/{quote}', 'show')->name('quote.show');
-		Route::get('/quotes/{movie}', 'showQuotes')->name('quotes.show');
+		Route::get('/quotes/{movie}', 'index')->name('quotes.index');
 	});
 
 	Route::group(['controller' => MovieController::class], function () {
@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::patch('/movies/{movie}', 'update')->name('movie.update');
 		Route::delete('/movie/{movie}', 'delete')->name('movie.delete');
 		Route::get('/movies/{movie}', 'show')->name('movie.show');
-		Route::get('/movies', 'showMovies')->name('movies.show');
+		Route::get('/movies', 'index')->name('movies.index');
 		Route::get('/genres', 'showGenres')->name('genres.show');
 	});
 

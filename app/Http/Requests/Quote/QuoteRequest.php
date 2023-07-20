@@ -14,12 +14,12 @@ class QuoteRequest extends FormRequest
 	 */
 	public function rules(Request $request): array
 	{
-       //json_encode($request->quote);
+		//json_encode($request->quote);
 		return [
-			'quote' =>  ['required', 'json'],
-			'image' => ['required'],
-            'movie_id' => ['required'],
-            'user_id' => ['required'],
+			'quote'    => ['required', 'json'],
+			'image'    => ['required'],
+			'movie_id' => ['required'],
+			'user_id'  => ['required'],
 		];
 	}
 }

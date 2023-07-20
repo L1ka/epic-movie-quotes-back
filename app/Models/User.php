@@ -18,101 +18,98 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
-    use HasApiTokens;
-    use HasFactory;
-    use Notifiable;
+	use HasApiTokens;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $guarded = ['id'];
+	use HasFactory;
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+	use Notifiable;
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'confirm_password' => 'hashed',
-    ];
+	/**
+	 * The attributes that are mass assignable.
+	 *
+	 * @var array<int, string>
+	 */
+	protected $guarded = ['id'];
 
-    /**
-     * Send the email verification notification.
-     *
-     * @return void
-     */
-    public function sendEmailVerificationNotification($notificationType = 'default'): void
-    {
-        if ($notificationType === 'updateEmail') {
-            $this->email = $this->temp_email;
-            $this->notify(new UpdateEmail($this));
-        } else {
-            $this->notify(new VerifyEmailCustom());
-        }
-    }
+	/**
+	 * The attributes that should be hidden for serialization.
+	 *
+	 * @var array<int, string>
+	 */
+	protected $hidden = [
+		'password',
+		'remember_token',
+	];
 
-    public function setPasswordAttribute($password): void
-    {
-        $this->attributes['password'] = bcrypt($password);
+	/**
+	 * The attributes that should be cast.
+	 *
+	 * @var array<string, string>
+	 */
+	protected $casts = [
+		'email_verified_at' => 'datetime',
+		'password'          => 'hashed',
+		'confirm_password'  => 'hashed',
+	];
 
-    }
+	/**
+	 * Send the email verification notification.
+	 *
+	 * @return void
+	 */
+	public function sendEmailVerificationNotification($notificationType = 'default'): void
+	{
+		if ($notificationType === 'updateEmail') {
+			$this->email = $this->temp_email;
+			$this->notify(new UpdateEmail($this));
+		} else {
+			$this->notify(new VerifyEmailCustom());
+		}
+	}
 
-    /**
-     * Send a password reset notification to the user.
-     *
-     * @param  string  $token
-     */
-    public function sendPasswordResetNotification($token): void
-    {
-        $this->notify(new ResetPasswordNotification($token));
-    }
+	public function setPasswordAttribute($password): void
+	{
+		$this->attributes['password'] = bcrypt($password);
+	}
 
+	/**
+	 * Send a password reset notification to the user.
+	 *
+	 * @param string $token
+	 */
+	public function sendPasswordResetNotification($token): void
+	{
+		$this->notify(new ResetPasswordNotification($token));
+	}
 
+	public function comment(): BelongsTo
+	{
+		return $this->belongsTo(Comment::class);
+	}
 
-    public function comment(): BelongsTo
-    {
-      return $this->belongsTo(Comment::class);
-    }
+	public function quote(): belongsTo
+	{
+		return $this->belongsTo(Quote::class);
+	}
 
-    public function quote(): belongsTo
-    {
-      return $this->belongsTo(Quote::class);
-    }
+	public function likedQuotes(): BelongsToMany
+	{
+		return $this->belongsToMany(Quote::class, 'quote_user')
+			->withTimestamps();
+	}
 
-    public function likedQuotes(): BelongsToMany
-    {
-        return $this->belongsToMany(Quote::class, 'quote_user')
-            ->withTimestamps();
-    }
+	public function movies(): HasMany
+	{
+		return $this->hasMany(Movie::class);
+	}
 
+	public function notifications(): MorphMany
+	{
+		return $this->morphMany(Notification::class, 'notifiable');
+	}
 
-    public function movies(): HasMany
-    {
-      return $this->hasMany(Movie::class);
-    }
-
-    public function notifications(): MorphMany
-    {
-        return $this->morphMany(Notification::class, 'notifiable');
-    }
-
-
-    public function notification(): belongsTo
-    {
-      return $this->belongsTo(Notification::class);
-    }
+	public function notification(): belongsTo
+	{
+		return $this->belongsTo(Notification::class);
+	}
 }
