@@ -54,7 +54,7 @@ class QuoteController extends Controller
 		return response()->json(['quote' => 'quote not found'], 200);
 	}
 
-	public function showQuotes(Movie $movie): ResourceCollection|JsonResponse
+	public function index(Movie $movie): ResourceCollection|JsonResponse
 	{
 		$movie = Movie::find($movie->id);
 		if ($movie) {

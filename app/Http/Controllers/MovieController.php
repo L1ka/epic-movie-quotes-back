@@ -58,7 +58,7 @@ class MovieController extends Controller
 		return response()->json(['movie' => 'movie not found'], 200);
 	}
 
-	public function showMovies(): ResourceCollection|JsonResponse
+	public function index(): ResourceCollection|JsonResponse
 	{
 		$user = auth()->user();
 
