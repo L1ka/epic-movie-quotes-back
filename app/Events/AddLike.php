@@ -10,25 +10,24 @@ use Illuminate\Queue\SerializesModels;
 
 class AddLike implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+	use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
-    public function __construct(public $likes)
-    {
-        //
-    }
+	/**
+	 * Create a new event instance.
+	 */
+	public function __construct(public $likes)
+	{
+	}
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
-    {
-        return [
-            new Channel('likes')
-        ];
-    }
+	/**
+	 * Get the channels the event should broadcast on.
+	 *
+	 * @return array<int, \Illuminate\Broadcasting\Channel>
+	 */
+	public function broadcastOn(): array
+	{
+		return [
+			new Channel('likes'),
+		];
+	}
 }

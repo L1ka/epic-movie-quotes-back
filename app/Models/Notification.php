@@ -9,27 +9,22 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Notification extends Model
 {
-    use HasFactory;
+	use HasFactory;
 
-    protected $guarded = ['id'];
+	protected $guarded = ['id'];
 
+	public function user(): BelongsTo
+	{
+		return $this->belongsTo(User::class);
+	}
 
-    public function user(): BelongsTo
-    {
-      return $this->belongsTo(User::class);
-    }
+	public function quote()
+	{
+		return $this->belongsTo(Quote::class);
+	}
 
-    public function quote()
-    {
-        return $this->belongsTo(Quote::class);
-    }
-
-
-
-    public function notifiable(): MorphTo
-    {
-        return $this->morphTo();
-    }
-
-
+	public function notifiable(): MorphTo
+	{
+		return $this->morphTo();
+	}
 }

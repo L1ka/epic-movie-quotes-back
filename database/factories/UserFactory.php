@@ -10,32 +10,32 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
-    {
-        return [
-            'first_name' => fake()->unique()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'image' => fake()->imageUrl(200, 200, 'animals', true),
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'confirm_password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-            'remember_token' => Str::random(10, true),
-            'verification_token' => Str::random(40, true)
-        ];
-    }
+	/**
+	 * Define the model's default state.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function definition(): array
+	{
+		return [
+			'first_name'         => fake()->unique()->name(),
+			'email'              => fake()->unique()->safeEmail(),
+			'image'              => fake()->imageUrl(200, 200, 'animals', true),
+			'email_verified_at'  => now(),
+			'password'           => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+			'confirm_password'   => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+			'remember_token'     => Str::random(10, true),
+			'verification_token' => Str::random(40, true),
+		];
+	}
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
-    }
+	/**
+	 * Indicate that the model's email address should be unverified.
+	 */
+	public function unverified(): static
+	{
+		return $this->state(fn (array $attributes) => [
+			'email_verified_at' => null,
+		]);
+	}
 }

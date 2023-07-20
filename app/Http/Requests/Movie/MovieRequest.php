@@ -16,12 +16,12 @@ class MovieRequest extends FormRequest
 	{
 		app()->setLocale($request->getPreferredLanguage());
 		return [
-			'title'    => ['required', 'json', 'unique:movies,title->en', 'unique:movies,title->ka'],
-			'year'     => ['required',  'digits:4'],
-			'director' => ['required', 'json'],
-			'image'    => ['required'],
-            'discription'  => ['required', 'json'],
-            'user_id'   => ['required'],
+			'title'        => ['required', 'json', 'unique:movies,title->en', 'unique:movies,title->ka'],
+			'year'         => ['required',  'digits:4'],
+			'director'     => ['required', 'json'],
+			'image'        => ['required'],
+			'discription'  => ['required', 'json'],
+			'user_id'      => ['required'],
 		];
 	}
 }

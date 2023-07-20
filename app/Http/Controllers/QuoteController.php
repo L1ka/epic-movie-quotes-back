@@ -17,10 +17,10 @@ class QuoteController extends Controller
 		$movie = Movie::find($request->movie_id);
 		$this->authorize('store', $movie);
 
-        Quote::create([
-            ...$request->validated(),
-            'image'    => '/storage/' . request()->image->store('thumbnails')
-        ]);
+		Quote::create([
+			...$request->validated(),
+			'image'    => '/storage/' . request()->image->store('thumbnails'),
+		]);
 	}
 
 	public function update(Request $request, Quote $quote): void

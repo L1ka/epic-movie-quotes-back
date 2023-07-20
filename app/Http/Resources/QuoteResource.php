@@ -23,8 +23,8 @@ class QuoteResource extends JsonResource
 			'comments' => CommentResaurce::collection($this->whenLoaded('comments', function () {
 				return $this->comments->sortByDesc('id');
 			})),
-			'likes_count' => $this->likers()->count(),
-            'liked_by_user' => $this->likers->contains(auth()->id()) ? new UserResource(auth()->user()) : null,
+			'likes_count'   => $this->likers()->count(),
+			'liked_by_user' => $this->likers->contains(auth()->id()) ? new UserResource(auth()->user()) : null,
 		];
 	}
 }

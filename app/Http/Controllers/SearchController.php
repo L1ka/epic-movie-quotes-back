@@ -13,44 +13,37 @@ use Illuminate\Support\Str;
 
 class SearchController extends Controller
 {
-    public function searchMyMovies(Request $request): ResourceCollection
-    {
-        $user = auth()->user();
+	public function searchMyMovies(Request $request): ResourceCollection
+	{
+		$user = auth()->user();
 
-        $movies = Movie::where('user_id', $user->id)->filter($request)->get();
+		$movies = Movie::where('user_id', $user->id)->filter($request)->get();
 
+		return MovieResource::collection($movies->load('quotes'));
+	}
 
-        return MovieResource::collection($movies->load('quotes'));
-    }
+	public function search(Request $request): JsonResponse
+	{
+		$perPage = $request->params['per_page'];
+		$currentPage = $request->params['page'];
 
+		if (!$request->search || $request->search == '#' || $request->search == '@') {
+			$quotes = Quote::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $currentPage);
+		}
 
-    public function search(Request $request): JsonResponse
-    {
-        $perPage = $request->params['per_page'];
-        $currentPage = $request->params['page'];
+		if (Str::startsWith($request->search, '#')) {
+			$quotes = Quote::orderBy('id', 'desc')->filterquote($request)
+				->paginate($perPage, ['*'], 'page', $currentPage);
+		}
 
+		if (Str::startsWith($request->search, '@')) {
+			$quotes = Quote::orderBy('id', 'desc')->with('movie')->filtermovie($request)
+				->paginate($perPage, ['*'], 'page', $currentPage);
+		}
 
-        if( !$request->search || $request->search == '#' || $request->search == '@')
-        {
-            $quotes = Quote::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $currentPage);
-        }
-
-        if (Str::startsWith($request->search, '#'))
-        {
-            $quotes = Quote::orderBy('id', 'desc')->filterquote($request)
-                ->paginate($perPage, ['*'], 'page', $currentPage);
-        }
-
-        if (Str::startsWith($request->search, '@'))
-        {
-            $quotes = Quote::orderBy('id', 'desc')->with('movie')->filtermovie($request)
-                ->paginate($perPage, ['*'], 'page', $currentPage);
-        }
-
-
-        return response()->json([
-            'quotes' => QuoteResource::collection($quotes->load('comments')),
-            'lastPage' => $quotes->lastPage()
-        ]);
-    }
+		return response()->json([
+			'quotes'   => QuoteResource::collection($quotes->load('comments')),
+			'lastPage' => $quotes->lastPage(),
+		]);
+	}
 }
