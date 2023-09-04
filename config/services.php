@@ -34,7 +34,7 @@ return [
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => 'https://epic-movie-quotes-back.vercel.app/api/auth/google/callback',
+        'redirect' => 'https://epic-movie-quotes-back.vercel.app/api/api/auth/google/callback',
 ],
 
 ];
