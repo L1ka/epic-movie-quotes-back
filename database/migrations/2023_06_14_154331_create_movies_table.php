@@ -18,7 +18,7 @@ return new class extends Migration {
 			$table->json('discription');
 			$table->string('image');
 			$table->timestamps();
-			$table->foreignId('user_id')->constrained()->cascadeOnDelete();
+			$table->foreignId('user_id');
 		});
 	}
 

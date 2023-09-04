@@ -12,9 +12,9 @@ return new class extends Migration {
 	{
 		Schema::create('notifications', function (Blueprint $table) {
 			$table->id();
-			$table->foreignId('quote_id')->constrained()->cascadeOnDelete();
-			$table->foreignId('movie_id')->constrained()->cascadeOnDelete();
-			$table->foreignId('user_id')->constrained()->cascadeOnDelete();
+			$table->foreignId('quote_id');
+			$table->foreignId('movie_id');
+			$table->foreignId('user_id');
 			$table->string('notifiable_type');
 			$table->integer('notifiable_id');
 			$table->boolean('seen')->default(false);
